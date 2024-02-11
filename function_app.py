@@ -1,31 +1,68 @@
 import azure.functions as func
-import ssl
-import smtplib
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-import config.config_variables
-from project.send_email import build_email_message
+import logging
+from project.config_variables import documentation_storage_name
+from project.storage_account_test import *
 
 app = func.FunctionApp()
 
-@app.function_name(name = "HttpTrigger1   ")
-@app.route(route = "")
-def send_email_function(req: func.HttpRequest) -> func.HttpResponse:
-    print("conflict1111111111111")
-    req_body = req.get_json()
-    sender_email = config.config_variables.sender_email
-    sender_email_password = config.config_variables.sender_email_password
-    host = config.config_variables.host
-    port = int(config.config_variables.port)
-    message = build_email_message(req_body.get('recipient_email'),req_body.get('subject') ,req_body.get('body'),req_body.get('excel'))
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(host, port, context = context) as smtp:
-        smtp.connect(host, port)  
-        smtp.login(sender_email, sender_email_password)
-        smtp.sendmail(sender_email,req_body.get('recipient_email'), message.as_string())
-    return func.HttpResponse(
-        "This HTTP triggered function executed successfully!!!.nowww",
-        status_code = 200
-    )
-print("conflict2999999999")
+
+@app.function_name(name="HttpTrigger1")
+@app.route(route="")
+def test_function(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Python HTTP trigger function processed a request.')
+    
+    body=req.get_body()
+    my_json = body.decode('utf8').replace("'", '"')
+    data = json.loads(my_json)
+    
+    subscription_id=data['subscription_id']
+    subscription_name=data['subscription_name']
+    storage_account=data['storage_account']
+    partition_key=data['partition_key']
+    row_key=data['row_key']
+    last_fetch_time=data['last_fetch_time']
+
+    response_for_null_storages={"storage_account":"null"}
+    
+    try:
+        if storage_account['tag'] == "True" :
+            paginated_response = {
+            "value": [response_for_null_storages],
+            "nextLink": None
+            }
+            return func.HttpResponse(json.dumps(paginated_response), mimetype="application/json")
+        
+        if(storage_account['name']==documentation_storage_name):
+            paginated_response = {
+            "value": [response_for_null_storages],
+            "nextLink": None
+            }
+            return func.HttpResponse(json.dumps(paginated_response), mimetype="application/json")
+
+        
+        object_for_alerts_to_excel=storage_account_test(
+            storage_account['name'],
+            partition_key,
+            row_key,
+            subscription_id,
+            subscription_name,
+            storage_account['id'],
+            last_fetch_time
+        )
+
+    except Exception as e:
+        logging.info(e)
+        response_for_null_storages={"storage_account":storage_account['name'],"alert_body":"null"}
+        paginated_response = {
+        "value": [response_for_null_storages],
+        "nextLink": None
+    }
+        return func.HttpResponse(json.dumps(paginated_response), mimetype="application/json")
+    
+    logging.info('object_for_alerts_to_excel-------------')
+    logging.info(str(object_for_alerts_to_excel))
+    paginated_response = {
+        "value": [object_for_alerts_to_excel],
+        "nextLink": None
+    }
+    return func.HttpResponse(json.dumps(paginated_response), mimetype="application/json")
