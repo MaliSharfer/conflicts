@@ -12,6 +12,7 @@ app = func.FunctionApp()
 @app.function_name(name = "HttpTrigger1   ")
 @app.route(route = "")
 def send_email_function(req: func.HttpRequest) -> func.HttpResponse:
+    print("conflict1")
     req_body = req.get_json()
     sender_email = config.config_variables.sender_email
     sender_email_password = config.config_variables.sender_email_password
@@ -19,11 +20,13 @@ def send_email_function(req: func.HttpRequest) -> func.HttpResponse:
     port = int(config.config_variables.port)
     message = build_email_message(req_body.get('recipient_email'),req_body.get('subject') ,req_body.get('body'),req_body.get('excel'))
     context = ssl.create_default_context()
+    print("conflict3")
     with smtplib.SMTP_SSL(host, port, context = context) as smtp:
         smtp.connect(host, port)  
         smtp.login(sender_email, sender_email_password)
         smtp.sendmail(sender_email,req_body.get('recipient_email'), message.as_string())
     return func.HttpResponse(
-        "This HTTP triggered function executed successfully!!!.",
+        "This HTTP triggered function executed successfully!!!.nowww",
         status_code = 200
     )
+print("conflict2")
