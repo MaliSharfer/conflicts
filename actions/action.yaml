@@ -9,7 +9,7 @@ runs:
       run: |
         echo "Searching for Docker files..."
         exists=$(find . -type f -iname '*docker*' -exec grep -qi 'https://netfree.link/dl/unix-ca.sh' {} \; -print)
-        if [ -n "$exists" ]; then
+        if [ "$exists" ]; then
           echo "Root CA found in [${exists}], failing..."
           exit 1
         else
@@ -20,7 +20,7 @@ runs:
       shell: bash
       run: |
         exists=$(find . -type f -exec grep -qi 'trusted-host' {} \; -print)
-        if [ -n "$exists" ]; then
+        if [ "$exists" ]; then
           echo "Trusted hosts found in [${exists}], failing..."
           exit 1
         else
