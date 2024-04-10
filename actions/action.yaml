@@ -7,14 +7,9 @@ runs:
     - name: 🔍 Check for CA in Docker based files
       shell: bash
       run: |
-        echo "jjjjjjjjj"
-        # exists=$(find . \
-        #   -type f \
-        #   -name '*[dD]ocker*' \
-        #   -exec grep -il 'https://netfree.link/dl/unix-ca.sh' {} +)
-        echo "tryyyyyy"
-
-        if [ "${exists}" ]; then
+        echo "Searching for Docker files..."
+        exists=$(find . -type f -iname '*docker*' -exec grep -qi 'https://netfree.link/dl/unix-ca.sh' {} \; -print)
+        if [ -n "$exists" ]; then
           echo "Root CA found in [${exists}], failing..."
           exit 1
         else
@@ -24,13 +19,12 @@ runs:
     - name: 🔍 Check for trusted hosts
       shell: bash
       run: |
-        exists=$(find . \
-          -type f \
-          -exec grep -il "--trusted-hosts" {} +)
+        echo "Searching for trusted hosts..."
+        exists=$(find . -type f -exec grep -qi '--trusted-hosts' {} \; -print)
 
-        if [ "${exists}" ]; then
+        if [ -n "$exists" ]; then
           echo "Trusted hosts found in [${exists}], failing..."
           exit 1
         else
-          echo "No root trusted hosts detected"
+          echo "No trusted hosts detected"
         fi
