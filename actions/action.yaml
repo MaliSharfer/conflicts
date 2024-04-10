@@ -19,8 +19,7 @@ runs:
     - name: 🔍 Check for trusted hosts
       shell: bash
       run: |
-        exists=$(find . -type f -exec grep -qi '\--trusted-hosts' {} \; -print)
-
+        exists=$(find . -type f -exec grep -qi '--trusted-hosts' {} \; -print)
         if [ -n "$exists" ]; then
           echo "Trusted hosts found in [${exists}], failing..."
           exit 1
