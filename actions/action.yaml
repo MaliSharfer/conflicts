@@ -8,10 +8,10 @@ runs:
       shell: bash
       run: |
         echo "jjjjjjjjj"
-        exists=$(find . \
-          -type f \
-          -name '*[dD]ocker*' \
-          -exec grep -il 'https://netfree.link/dl/unix-ca.sh' {} +)
+        # exists=$(find . \
+        #   -type f \
+        #   -name '*[dD]ocker*' \
+        #   -exec grep -il 'https://netfree.link/dl/unix-ca.sh' {} +)
         echo "tryyyyyy"
 
         if [ "${exists}" ]; then
