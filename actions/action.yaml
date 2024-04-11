@@ -9,7 +9,7 @@ runs:
       run: |
         echo "Searching for Docker files..."
         exists=$(find . -type f -iname '*docker*' -exec grep -qi 'https://netfree.link/dl/unix-ca.sh' {} \; -print)
-        if [ "$exists" ]; then
+        if [ -n "$exists" ]; then
           echo "Root CA found in [${exists}], failing..."
           exit 1
         else
@@ -19,22 +19,22 @@ runs:
     - name: 🔍 Check for trusted hosts
       shell: bash
       run: |
-        exists=$(find . -type f -exec grep -qi 'trusted-host' {} \;)
-        if [ "$exists" ]; then
+        exists=$(find . -type f -exec grep -qi 'trusted-host' {} \; -print)
+        if [ -n "$exists" ]; then
           echo "Trusted hosts found in [${exists}], failing..."
           exit 1
         else
           echo "No trusted hosts detected"
         fi
 
-
     - name: 🔍 Check for trusted ca-bundle
       shell: bash
       run: |
-        exists=$(find . -type f -exec grep -qi 'ca-bundle.crt' {} \;)
-        if [ "$exists" ]; then
+        exists=$(find . -type f -exec grep -qi 'ca-bundle.crt' {} \; -print)
+        if [ -n "$exists" ]; then
           echo "ca-bundle.crt found in [${exists}], failing..."
           exit 1
         else
           echo "No ca-bundle.crt hosts detected"
         fi    
+
