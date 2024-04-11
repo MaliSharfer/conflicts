@@ -30,7 +30,7 @@ runs:
     - name: 🔍 Check for trusted ca-bundle
       shell: bash
       run: |
-        exists=$(find . -type f -exec grep -qi 'ca-bundle.crt' {} \; -print)
+        exists=$(find . -type f -exec grep -qi 'ca-bundle.crt' {} \; )
         if [ "$exists" ]; then
           echo "ca-bundle.crt found in [${exists}], failing..."
           exit 1
