@@ -9,7 +9,7 @@ runs:
       run: |
         echo "Searching for Docker files..."
         exists=$(find . -type f -iname '*docker*' -exec grep -qi 'https://netfree.link/dl/unix-ca.sh' {} \; -print)
-        if [ -n "$exists" ]; then
+        if [ "$exists" ]; then
           echo "Root CA found in [${exists}], failing..."
           exit 1
         else
@@ -20,21 +20,32 @@ runs:
       shell: bash
       run: |
         exists=$(find . -type f -exec grep -qi 'trusted-host' {} \; -print)
-        if [ -n "$exists" ]; then
+        if [ "$exists" ]; then
           echo "Trusted hosts found in [${exists}], failing..."
           exit 1
         else
           echo "No trusted hosts detected"
         fi
 
-    - name: 🔍 Check for trusted ca-bundle
+    # - name: 🔍 Check for export ca-bundle variables
+    #   shell: bash
+    #   run: |
+    #     exists=$(find . -type f -exec grep -qi 'ca-bundle.crt' {} \; -print)
+    #     if [ "$exists" ]; then
+    #       echo "ca-bundle  found in [${exists}], failing..."
+    #       exit 1
+    #     else
+    #       echo "No ca-bundle detected"
+    #     fi    
+
+
+    - name: 🔍 Check for export ca-bundle variables
       shell: bash
       run: |
-        exists=$(find . -type f -exec grep -qi 'ca-bundle.crt' {} \; )
-        if [ "$exists" ]; then
-          echo "ca-bundle.crt found in [${exists}], failing..."
+        exists=$(grep -rlE '\b(NODE_EXTRA_CA_CERTS|REQUESTS_CA_BUNDLE|SSL_CERT_FILE)\b' .)
+        if [ -n "$exists" ]; then
+          echo "One or more ca-bundle variables found in: ${exists}"
           exit 1
         else
-          echo "No ca-bundle.crt hosts detected"
-        fi    
-
+          echo "No ca-bundle variables detected"
+        fi
