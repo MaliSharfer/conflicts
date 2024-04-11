@@ -39,13 +39,13 @@ runs:
     #     fi    
 
 
-    - name: 🔍 Check for export ca-bundle variables
+    - name: 🔍 Check for export CA variables
       shell: bash
       run: |
         exists=$(grep -rlE '\b(NODE_EXTRA_CA_CERTS|REQUESTS_CA_BUNDLE|SSL_CERT_FILE)\b' . || true)
         if [ -n "$exists" ]; then
-          echo "One or more ca-bundle variables found in: ${exists}"
+          echo "CA variables found in [${exists}], failing..."
           exit 1
         else
-          echo "No ca-bundle variables detected"
+          echo "No CA variables detected"
         fi
