@@ -42,8 +42,7 @@ runs:
     - name: 🔍 Check for export CA variables
       shell: bash
       run: |
-        exists=$(grep -rlE '\b(NODE_EXTRA_CA_CERTS|REQUESTS_CA_BUNDLE|SSL_CERT_FILE)\b' . || true)
-        if [ -n "$exists" ]; then
+        if grep -rlE '\b(NODE_EXTRA_CA_CERTS|REQUESTS_CA_BUNDLE|SSL_CERT_FILE)\b' . > /dev/null; then
           echo "CA variables found in [${exists}], failing..."
           exit 1
         else
