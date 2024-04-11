@@ -31,7 +31,7 @@ runs:
       shell: bash
       run: |
         exists=$(find . -type f -exec grep -qi 'ca-bundle.crt' {} \; -print)
-        if [ -n "$exists" ]; then
+        if [ "$exists" ]; then
           echo "ca-bundle.crt found in [${exists}], failing..."
           exit 1
         else
