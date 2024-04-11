@@ -36,5 +36,5 @@ runs:
           echo "ca-bundle.crt found in [${exists}], failing..."
           exit 1
         else
-          echo "No trusted hosts detected"
+          echo "No ca-bundle.crt hosts detected"
         fi    
