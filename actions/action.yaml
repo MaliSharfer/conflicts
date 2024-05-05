@@ -27,24 +27,15 @@ runs:
           echo "No trusted hosts detected"
         fi
 
-    # - name: 🔍 Check for export ca-bundle variables
-    #   shell: bash
-    #   run: |
-    #     exists=$(find . -type f -exec grep -qi 'ca-bundle.crt' {} \; -print)
-    #     if [ "$exists" ]; then
-    #       echo "ca-bundle  found in [${exists}], failing..."
-    #       exit 1
-    #     else
-    #       echo "No ca-bundle detected"
-    #     fi    
-
-
-    - name: 🔍 Check for export CA variables
-      shell: bash
-      run: |
-        if grep -rlE '\b(NODE_EXTRA_CA_CERTS|REQUESTS_CA_BUNDLE|SSL_CERT_FILE)\b' . > /dev/null; then
-          echo "CA variables found in [${exists}], failing..."
-          exit 1
-        else
-          echo "No CA variables detected"
-        fi
+- name: 🔍 Check for export CA variables
+  shell: bash
+  run: |
+    pattern='(?i)\b(NODE_EXTRA_CA_CERTS|REQUESTS_CA_BUNDLE|SSL_CERT_FILE)\b'
+    if grep -irlE "$pattern" . > /dev/null; then
+      echo "CA variables found in the following files:"
+      grep -irlE "$pattern" .
+      echo "Failing..."
+      exit 1
+    else
+      echo "No CA variables detected"
+    fi

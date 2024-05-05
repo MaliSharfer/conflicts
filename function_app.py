@@ -10,11 +10,11 @@ app = func.FunctionApp()
 @app.route(route="")
 def test_function(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
-    
+
     body=req.get_body()
     my_json = body.decode('utf8').replace("'", '"')
     data = json.loads(my_json)
-    
+
     subscription_id=data['subscription_id']
     subscription_name=data['subscription_name']
     storage_account=data['storage_account']
@@ -23,7 +23,7 @@ def test_function(req: func.HttpRequest) -> func.HttpResponse:
     last_fetch_time=data['last_fetch_time']
 
     response_for_null_storages={"storage_account":"null"}
-    
+
     try:
         if storage_account['tag'] == "True" :
             paginated_response = {
@@ -31,7 +31,7 @@ def test_function(req: func.HttpRequest) -> func.HttpResponse:
             "nextLink": None
             }
             return func.HttpResponse(json.dumps(paginated_response), mimetype="application/json")
-        
+
         if(storage_account['name']==documentation_storage_name):
             paginated_response = {
             "value": [response_for_null_storages],
@@ -39,7 +39,7 @@ def test_function(req: func.HttpRequest) -> func.HttpResponse:
             }
             return func.HttpResponse(json.dumps(paginated_response), mimetype="application/json")
 
-        
+
         object_for_alerts_to_excel=storage_account_test(
             storage_account['name'],
             partition_key,
@@ -58,7 +58,7 @@ def test_function(req: func.HttpRequest) -> func.HttpResponse:
         "nextLink": None
     }
         return func.HttpResponse(json.dumps(paginated_response), mimetype="application/json")
-    
+
     logging.info('object_for_alerts_to_excel-------------')
     logging.info(str(object_for_alerts_to_excel))
     paginated_response = {

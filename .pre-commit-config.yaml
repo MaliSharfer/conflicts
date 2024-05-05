@@ -1,0 +1,34 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-json
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args:
+          - --markdown-linebreak-ext=md
+  
+  - repo: local
+    hooks:
+      - id: laravel-pint-lint
+        name: Laravel Pint Lint
+        entry: C:\projects\mappingTasks\cloudTasks\featuresecurity-certificate-check-2\conflicts\script.sh
+        language: script
+        types: [php]
+
+
+
+  # - repo: https://github.com/shellcheck-py/shellcheck-py
+  #   rev: v0.9.0.6
+  #   hooks:
+  #   -   id: shellcheck
+
+  # - repo: local
+  #   hooks:
+  #     - id: yaml-file-extension
+  #       name: Check that YAML files have *.yaml extension
+  #       entry: YAML filenames must have .yaml extension
+  #       language: fail
+  #       files: .yml$
