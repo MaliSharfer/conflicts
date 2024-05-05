@@ -30,7 +30,7 @@ runs:
     - name: 🔍 Check for export CA variables
       shell: bash
       run: |
-        if grep -irl \b(NODE_EXTRA_CA_CERTS|REQUESTS_CA_BUNDLE|SSL_CERT_FILE)\b . > /dev/null; then
+         if grep -irlE '\b(NODE_EXTRA_CA_CERTS|REQUESTS_CA_BUNDLE|SSL_CERT_FILE)\b' . > /dev/null; then
           echo "CA variables found in the following files:"
           grep -irlE "$pattern" .
           echo "Failing..."
